@@ -26,4 +26,4 @@ POST /api/transaction/history -> pakai Bearer token
 
 ## Notes
 - Menggunakan raw query + prepared statement
-- Database: PostgreSQL(Neon)
+- Database: PostgreSQL(Neon).
