@@ -339,6 +339,23 @@ exports.topUpBalance = async (req, res) => {
 
 exports.createTransaction = async (req, res) => {
   const serviceCode = String(req.body?.service_code || '').trim();
+  const amount = req.body?.amount;
+
+  if (
+    amount !== undefined &&
+    (
+      typeof amount !== 'number' ||
+      !Number.isFinite(amount) ||
+      !Number.isInteger(amount) ||
+      amount < 0
+    )
+  ) {
+    return res.status(400).json({
+      status: 102,
+      message: 'Paramter amount hanya boleh angka dan tidak boleh lebih kecil dari 0',
+      data: null,
+    });
+  }
 
   if (!serviceCode) {
     return res.status(400).json({
