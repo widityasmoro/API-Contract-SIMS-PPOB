@@ -576,7 +576,9 @@ exports.updateProfileImage = async (req, res) => {
     }
 
     const email = req.user?.email;
-    const profileImageUrl = `${req.protocol}://${req.get('host')}/uploads/${req.file.filename}`;
+    const profileImageUrl = req.file.buffer
+      ? `data:${req.file.mimetype};base64,${req.file.buffer.toString('base64')}`
+      : `${req.protocol}://${req.get('host')}/uploads/${req.file.filename}`;
 
     const query = `
       UPDATE users
