@@ -10,8 +10,6 @@ function getLogFilePath(date = new Date()) {
 }
 
 function writeLog(level, message, meta = {}) {
-  fs.mkdirSync(logDir, { recursive: true });
-
   const entry = {
     time: new Date().toISOString(),
     level,
@@ -19,7 +17,18 @@ function writeLog(level, message, meta = {}) {
     ...meta,
   };
 
-  fs.appendFileSync(getLogFilePath(), `${JSON.stringify(entry)}\n`, 'utf8');
+  if (process.env.VERCEL) {
+    console.log(JSON.stringify(entry));
+    return;
+  }
+
+  try {
+    fs.mkdirSync(logDir, { recursive: true });
+    fs.appendFileSync(getLogFilePath(), `${JSON.stringify(entry)}\n`, 'utf8');
+  } catch (err) {
+    console.error('[LOGGER ERROR]', err);
+    console.log(JSON.stringify(entry));
+  }
 }
 
 function getUserFromAuthorization(authHeader = '') {

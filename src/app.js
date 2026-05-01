@@ -33,6 +33,14 @@ app.use(express.json());
 app.use(requestLogger);
 app.use('/uploads', express.static(path.resolve(__dirname, '../public/uploads')));
 
+app.get('/', (_req, res) => {
+  res.json({
+    status: 0,
+    message: 'SIMS PPOB API is running',
+    data: null,
+  });
+});
+
 app.get('/banner', bannerController.getBanners);
 app.get('/balance', verifyToken, userController.getBalance);
 app.post('/topup', verifyToken, userController.topUpBalance);
@@ -64,18 +72,20 @@ app.use((err, _req, res, _next) => {
   });
 });
 
-const PORT = process.env.PORT || 3000;
-const server = app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-});
-
-server.on('error', (err) => {
-  console.error('[SERVER ERROR]', err);
-  writeLog('error', 'Server Error', {
-    error: err.message,
-    stack: err.stack,
+if (require.main === module) {
+  const PORT = process.env.PORT || 3000;
+  const server = app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
   });
-});
+
+  server.on('error', (err) => {
+    console.error('[SERVER ERROR]', err);
+    writeLog('error', 'Server Error', {
+      error: err.message,
+      stack: err.stack,
+    });
+  });
+}
 
 process.on('uncaughtException', (err) => {
   console.error('[UNCAUGHT EXCEPTION]', err);
@@ -92,3 +102,5 @@ process.on('unhandledRejection', (reason) => {
     stack: reason instanceof Error ? reason.stack : undefined,
   });
 });
+
+module.exports = app;
