@@ -27,3 +27,4 @@ POST /api/transaction/history -> pakai Bearer token
 ## Notes
 - Menggunakan raw query + prepared statement
 - Database: PostgreSQL(Neon).
+- Database design / DDL tersedia di `database/schema.sql`.
